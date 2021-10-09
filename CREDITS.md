@@ -116,4 +116,10 @@
 
 - mikkeyboi - Unraid OS stuff
 
+- deftdawg - Various correctness and robustness fixes - thanks!
+
+- sickcodes - Keep being awesome ;)
+
+- Kian Kasad (kdkasad) - Use grep instead of egrep
+
 Note: Individual files have more specific 'credits' in them.

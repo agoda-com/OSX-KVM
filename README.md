@@ -27,17 +27,12 @@ help (pull-requests!) with the following work items:
 
 * Document how to use this project for XNU kernel debugging and development.
 
-* Document the process to create and reuse VM snapshots. Instantaneous macOS
-  boots would be nice this way.
-
 * Document the process to launch a bunch of headless macOS VMs (build farm).
 
 * Document usage of [munki](https://github.com/munki/munki) to deploy software
   to such a `build farm`.
 
 * Enable VNC + SSH support out of the box or more easily.
-
-* Better support + docs for AMD Ryzen.
 
 * Robustness improvements are always welcome!
 
@@ -50,7 +45,7 @@ help (pull-requests!) with the following work items:
 
 * QEMU >= 4.2.0
 
-* A CPU with Intel VT-x / AMD SVM support is required (`egrep '(vmx|svm)' /proc/cpuinfo`)
+* A CPU with Intel VT-x / AMD SVM support is required (`grep -e vmx -e svm /proc/cpuinfo`)
 
 * A CPU with SSE4.1 support is required for >= macOS Sierra
 
@@ -71,7 +66,7 @@ Phenom II X3 720 does not. Ryzen processors work just fine.
   To make this change permanent, you may use the following command.
 
   ```
-  sudo cp kvm.conf /etc/modprobe.d/kvm.conf  # for intel boxes
+  sudo cp kvm.conf /etc/modprobe.d/kvm.conf  # for intel boxes only
   ```
 
 * Install QEMU and other packages.
@@ -95,7 +90,7 @@ Phenom II X3 720 does not. Ryzen processors work just fine.
   ```
   cd ~
 
-  git clone --depth 1 https://github.com/kholia/OSX-KVM.git
+  git clone --depth 1 --recursive https://github.com/kholia/OSX-KVM.git
 
   cd OSX-KVM
   ```
@@ -106,12 +101,12 @@ Phenom II X3 720 does not. Ryzen processors work just fine.
   ./fetch-macOS-v2.py
   ```
 
-  ATTENTION: Installing `Big Sur` is NOT recommended at this time, unless you
-  are a Hackintosh developer! Let the `Big Sur` setup sit at the `Country
-  Selection` screen and other similar places for a while ;)
-
   You can choose your desired macOS version here. After executing this step,
   you should have the `BaseSystem.dmg` file in the current folder.
+
+  ATTENTION: Let the `Big Sur` setup sit at the `Country Selection` screen, and
+  other similar places for a while if things are being slow. The initial macOS
+  setup wizard will eventually succeed.
 
   Sample run:
 
@@ -217,13 +212,17 @@ work, patience, and a bit of luck (perhaps?).
 
   This has been enough for me so far.
 
-  Note: You may need to [enable the `rc.local` functionality manually on modern Ubuntu versions](https://linuxmedium.com/how-to-enable-etc-rc-local-with-systemd-on-ubuntu-20-04/).
+  Note: You may need to enable the `rc.local` functionality manually on modern
+  Ubuntu versions. Check out the [notes](notes.md) included in this repository
+  for details.
 
-* To passthrough GPUs and other devices, see [these notes](notes.md).
+* To passthrough GPUs and other devices, see [these notes](notes.md#gpu-passthrough-notes).
 
-* Need a different resolution? Check out the [notes](notes.md) included in this repository.
+* Need a different resolution? Check out the [notes](notes.md#change-resolution-in-opencore) included in this repository.
 
-* To generate your own SMBIOS, use [GenSMBIOS](https://github.com/corpnewt/GenSMBIOS).
+* Trouble with iMessage? Check out the [notes](notes.md#trouble-with-imessage) included in this repository.
+
+* Highly recommended macOS tweaks - https://github.com/sickcodes/osx-optimizer
 
 
 ### Is This Legal?
