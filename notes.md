@@ -19,10 +19,10 @@ Also tweaking the `smbios.plist` file can help (?).
 ### Change resolution in OpenCore
 
 ```diff
-diff --git a/OpenCore-Catalina/config.plist b/OpenCore-Catalina/config.plist
+diff --git a/OpenCore/config.plist b/OpenCore/config.plist
 index 4754e8c..489570f 100644
---- a/OpenCore-Catalina/config.plist
-+++ b/OpenCore-Catalina/config.plist
+--- a/OpenCore/config.plist
++++ b/OpenCore/config.plist
 @@ -692,7 +692,7 @@
                         <key>ConsoleMode</key>
                         <string></string>
@@ -144,7 +144,7 @@ AMD RX 570 GPU (May 2021).
           01:00.1 Audio device [0403]: Advanced Micro Devices, Inc. [AMD/ATI] Ellesmere HDMI Audio [Radeon RX 470/480 / 570/580/590] [1002:aaf0] (rev ff)
    ```
 
-* Fix permisions for the `/dev/vfio/1` device (modify as needed):
+* Fix permissions for the `/dev/vfio/1` device (modify as needed):
 
   ```
   sudo cp vfio-kvm.rules /etc/udev/rules.d/vfio-kvm.rules
@@ -158,6 +158,8 @@ AMD RX 570 GPU (May 2021).
   ```
   @kvm            soft    memlock         unlimited
   @kvm            hard    memlock         unlimited
+  @libvirt        soft    memlock         unlimited
+  @libvirt        hard    memlock         unlimited
   ```
 
   Thanks to `Heiko Sieger` for this solution.
@@ -167,6 +169,21 @@ AMD RX 570 GPU (May 2021).
 
 * To reuse the keyboard and mouse devices from the host, setup "Automatic
   login" in System Preferences in macOS and configure Synergy software.
+
+Note: On `Pop!_OS`, use the `kernelstub` command to change the kernel boot
+arguments.
+
+Note 2: Use [AMD VBFlash](https://www.techpowerup.com/download/ati-atiflash/)
+to dump the AMD GPU bios, and pass on to QEMU. This is especially required if
+your AMD GPU is not starting up properly (resulting in "no signal" on the
+monitor).
+
+Tested GPUs: ZOTAC GeForce GT 710 DDR3 (<= Big Sur), Sapphire Radeon RX 570.
+
+
+UPDATE: Project sponsors get access to the `Private OSX-KVM repository`, and
+direct support. This private repository has a playbook to automate 95% of this
+work in a rugged, consistent manner.
 
 
 ### USB passthrough notes
@@ -209,7 +226,7 @@ These steps will need to be adapted for your particular setup.
   $ scripts/vfio-group.sh 13
   ```
 
-* Add `-device vfio-pci,host=03:00.0,bus=pcie.0 \` line to `boot-passthrough.sh`.
+* Add `-device vfio-pci,host=03:00.0,bus=pcie.0` line to `boot-passthrough.sh`.
 
 * Boot the VM, and devices attached to the ASMedia USB controller should just work under macOS.
 
@@ -233,15 +250,22 @@ These steps will need to be adapted for your particular setup.
 
 ### Virtual Sound Device
 
-*Warning: The OpenCore distribution that comes with OSX-KVM already has
-`VoodooHDA OC`. Do NOT mix VoodooHDA with AppleALC. You may want to consider
-HDA passthrough if it is practical or use HDMI audio instead*
+https://github.com/chris1111/VoodooHDA-OC
+
+This kext can be used on macOS 10.12 to macOS Big Sur 11.2 to get emulated
+sound card working. Do NOT mix VoodooHDA with AppleALC. You may want to
+consider HDA passthrough or USB sound card passthrough or use HDMI audio
+instead.
 
 Note: The emulated sound output can be choppy, and distorted. Use Sound Card /
 USB Sound Card passthrough instead.
 
 Note: It seems that playback of Flash videos requires an audio device to be
 present.
+
+![USB Sound Card](./screenshots/QHM623_USB_Sound_Card_1.jpg)
+
+This cheap(est) USB sound card works pretty well on macOS.
 
 
 ### Building QEMU from source
@@ -393,7 +417,12 @@ get some performance gain.
 ### Permission problems with libvirt / qemu?
 
 ```
-sudo setfacl -m u:libvirt-qemu:rx <path>  # fix virt-manager perm problems
+sudo setfacl -m u:libvirt-qemu:rx /home/$USER
+sudo setfacl -R -m u:libvirt-qemu:rx /home/$USER/OSX-KVM
+
+In general,
+
+sudo setfacl -R -m u:libvirt-qemu:rx <path>  # fix virt-manager perm problems
 ```
 
 
