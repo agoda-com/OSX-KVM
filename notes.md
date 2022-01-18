@@ -24,14 +24,9 @@ index 4754e8c..489570f 100644
 --- a/OpenCore/config.plist
 +++ b/OpenCore/config.plist
 @@ -692,7 +692,7 @@
-                        <key>ConsoleMode</key>
-                        <string></string>
                         <key>Resolution</key>
 -                       <string>Max</string>
 +                       <string>1920x1080</string>
-                        <key>ClearScreenOnModeSwitch</key>
-                        <false/>
-                        <key>IgnoreTextInGraphics</key>
 ```
 
 Ensure that the OVMF resolution is set equal to resolution set in your OpenCore
@@ -43,6 +38,9 @@ desired value (default is 1024x768). Commit changes and exit the OVMF menu.
 
 Note: The macOS VM's resolution can be changed via `Settings -> Displays`
 option easily.
+
+Note: After changing the `config.plist` file, please regenerate the
+`OpenCore.qcow2` file using the instructions included in this repository.
 
 
 ### GPU passthrough notes
@@ -102,10 +100,13 @@ AMD RX 570 GPU (May 2021).
   $ sudo update-initramfs -k all -u
   ```
 
-* In the BIOS setup, set the `Primary Display` to `IGFX` (onboard graphics).
+* In the BIOS setup, set the `Primary Display` to `IGFX` (aka CPU graphics / onboard graphics).
 
-* Verify that the IOMMU is enabled, and `vfio-pci` is working as expected.
-  Verify that the expected devices are using `vfio-pci` as their kernel driver
+  Tip: Update the BIOS!
+
+* Verify that the IOMMU ("VT-d" for Intel) is enabled, and `vfio-pci` is
+  working as expected. Verify that the expected devices are using `vfio-pci` as
+  their kernel driver.
 
   ```
   $ dmesg | grep -i iommu
@@ -180,10 +181,11 @@ monitor).
 
 Tested GPUs: ZOTAC GeForce GT 710 DDR3 (<= Big Sur), Sapphire Radeon RX 570.
 
-
 UPDATE: Project sponsors get access to the `Private OSX-KVM repository`, and
 direct support. This private repository has a playbook to automate 95% of this
 work in a rugged, consistent manner.
+
+[Link to a list of supported GPUs](https://dortania.github.io/GPU-Buyers-Guide/modern-gpus/amd-gpu.html).
 
 
 ### USB passthrough notes
@@ -229,6 +231,8 @@ These steps will need to be adapted for your particular setup.
 * Add `-device vfio-pci,host=03:00.0,bus=pcie.0` line to `boot-passthrough.sh`.
 
 * Boot the VM, and devices attached to the ASMedia USB controller should just work under macOS.
+
+[Here is a link to a list of recommended USB PCIe cards](http://blog.greggant.com/posts/2018/05/07/definitive-mac-pro-upgrade-guide.html).
 
 
 ### Synergy Notes
@@ -663,6 +667,15 @@ The `-smp line` should read something like the following:
 ### Trouble with iMessage?
 
 Check out [this Dortania article on this topic](https://dortania.github.io/OpenCore-Post-Install/universal/iservices.html#using-gensmbios).
+
+
+### Fix 'guest boots to UEFI shell' problem
+
+Use a fresh copy of the `OVMF_VARS-1024x768.fd` file.
+
+```
+git checkout OVMF_VARS-1024x768.fd
+```
 
 
 ### Enable rc.local functionality on moden Ubuntu versions
