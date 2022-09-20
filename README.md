@@ -73,7 +73,7 @@ Phenom II X3 720 does not. Ryzen processors work just fine.
 
   ```
   sudo apt-get install qemu uml-utilities virt-manager git \
-      wget libguestfs-tools p7zip-full make -y
+      wget libguestfs-tools p7zip-full make dmg2img -y
   ```
 
   This step may need to be adapted for your Linux distribution.
@@ -83,6 +83,7 @@ Phenom II X3 720 does not. Ryzen processors work just fine.
   ```
   sudo usermod -aG kvm $(whoami)
   sudo usermod -aG libvirt $(whoami)
+  sudo usermod -aG input $(whoami)
   ```
 
   Note: Re-login after executing this command.
@@ -129,7 +130,7 @@ Phenom II X3 720 does not. Ryzen processors work just fine.
   4. Big Sur (11.6) - RECOMMENDED
   5. Monterey (latest)
 
-  Choose a product to download (1-5):
+  Choose a product to download (1-5): 4
   ```
 
   Note: Modern NVIDIA GPUs are supported on HighSierra but not on later
@@ -138,7 +139,13 @@ Phenom II X3 720 does not. Ryzen processors work just fine.
 * Convert the downloaded `BaseSystem.dmg` file into the `BaseSystem.img` file.
 
   ```
-  qemu-img convert BaseSystem.dmg -O raw BaseSystem.img
+  dmg2img -i BaseSystem.dmg BaseSystem.img
+  ```
+
+  OR
+
+  ```
+  qemu-img convert BaseSystem.dmg -O raw BaseSystem.img  # can be problematic on newer systems
   ```
 
 * Create a virtual HDD image where macOS will be installed. If you change the
@@ -165,7 +172,10 @@ Phenom II X3 720 does not. Ryzen processors work just fine.
 
   Note: This same script works for Big Sur, Catalina, Mojave, and High Sierra.
 
-- You are all set! 🙌
+- Use the `Disk Utility` tool within the macOS installer to partition, and
+  format the virtual disk attached to the macOS VM.
+
+- Go ahead, and install macOS 🙌
 
 - TIP: Using a non-APFS filesystem is recommended.
 
