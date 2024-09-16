@@ -42,7 +42,7 @@
 
 * Jan Kuri (jkuri) - Mojave ISO creation fixes
 
-* Mike Hardy (mikehardy) - Network documentation improvements
+* Mike Hardy (mikehardy) - Network documentation improvements, Ventura 'ISO' script
 
 * CuriousTommy + pickled_monkey - Information on vmxnet3 network adapter
 
@@ -139,5 +139,9 @@
 - sumad200 - XML fixes
 
 - MobCode100 - Ventura + AVX2 docs
+
+- Murilo Rocha Pereira - https://github.com/murilopereirame - Typo fixes
+
+- gotjoshua - Typo fixes
 
 Note: Individual files have more specific 'credits' in them.
